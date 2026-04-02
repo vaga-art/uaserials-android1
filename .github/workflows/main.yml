@@ -19,17 +19,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Fix gradle wrapper jar
+    - name: Install Gradle
       run: |
-        curl -fsSL "https://services.gradle.org/distributions/gradle-8.4-bin.zip" -o /tmp/gradle.zip
-        unzip -q /tmp/gradle.zip -d /tmp/gradle-dist
-        /tmp/gradle-dist/gradle-8.4/bin/gradle wrapper --gradle-version 8.4 --project-dir .
+        wget -q https://services.gradle.org/distributions/gradle-8.4-bin.zip -P /tmp
+        sudo unzip -d /opt/gradle /tmp/gradle-8.4-bin.zip
+        echo "/opt/gradle/gradle-8.4/bin" >> $GITHUB_PATH
+
+    - name: Generate Gradle Wrapper
+      run: gradle wrapper --gradle-version 8.4
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
-
-    - name: Make gradlew executable
-      run: chmod +x gradlew
 
     - name: Build APK
       run: ./gradlew assembleRelease
